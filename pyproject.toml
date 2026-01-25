@@ -1,0 +1,17 @@
+[project]
+name = "shadow-compass"
+version = "0.1.0"
+description = "Add your description here"
+requires-python = ">=3.12"
+dependencies = [
+    "jinja2>=3.1.6",
+    "json-with-comments>=1.2.10",
+    "minify-html>=0.18.1",
+    "pillow>=12.1.0",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.14.13",
+    "ty>=0.0.12",
+]

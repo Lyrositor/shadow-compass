@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="{{lang}}" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>{% block title %}Shadow Compass{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.purple.min.css">
+    <link rel="stylesheet" href="{{ root }}style.css">
+    <link rel="icon" type="image/png" href="{{ root }}logo.png">
+</head>
+<body>
+    <header id="header">
+        <div class="container">
+            <section id="logo">
+                <a href="{{ root }}{{ lang }}">
+                    <img src="{{ root }}logo.png" alt="Shadow Compass" width="128" height="128" style="margin: 0 auto">
+                </a>
+            </section>
+            <nav id="categories">
+                <ul>
+                    <li><a href="{{ root }}{{ lang }}/tags">Tags</a></li>
+                    <li><a href="{{ root }}{{ lang }}/cards">Cards</a></li>
+                    <li><a href="{{ root }}{{ lang }}/rites">Rites</a></li>
+                    <li><a href="{{ root }}{{ lang }}/events">Events</a></li>
+                    <li><a href="{{ root }}{{ lang }}/loots">Loot</a></li>
+                    <li><a href="{{ root }}{{ lang }}/endings">Endings</a></li>
+                    <li><a href="{{ root }}{{ lang }}/objectives">Objectives</a></li>
+                    <li><a href="{{ root }}{{ lang }}/upgrades">Upgrades</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+    <main class="container">
+        <hgroup>
+            <p id="category">{% block category %}{% endblock %}</p>
+            <aside id="illustration">
+                {% block illustration %}{% endblock %}
+            </aside>
+            <h2 id="heading">{% block heading %}{% endblock %}</h2>
+            <p id="description">{% block description %}{% endblock %}</p>
+        </hgroup>
+        {% block content %}{% endblock %}
+    </main>
+    <footer id="footer" class="container">
+        <nav id="languages">
+            <ul>
+                <li><a href="{{ root }}zhCN/{{ key }}" class="secondary">简体中文</a></li>
+                <li><a href="{{ root }}zhTW/{{ key }}" class="secondary">繁體中文</a></li>
+                <li><a href="{{ root }}en/{{ key }}" class="secondary">English</a></li>
+                <li><a href="{{ root }}ja/{{ key }}" class="secondary">日本語</a></li>
+            </ul>
+        </nav>
+        <hr />
+        <section>
+            <p><small>Sultan's Game is the sole property of Double Cross Studio. This is a fan-made resource that uses content extracted from the game.</small></p>
+        </section>
+    </footer>
+    <script src="{{ root }}script.js"></script>
+</body>
+</html>

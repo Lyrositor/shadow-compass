@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Loot - Shadow Compass{% endblock %}
+
+{% block heading %}Loot{% endblock %}
+
+{% block description %}The full list of game loot is presented below.{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for loot in game.loots.values()|_sort %}
+            <li>{{ loot|a }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

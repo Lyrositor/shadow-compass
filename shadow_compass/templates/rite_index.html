@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Rites - Shadow Compass{% endblock %}
+
+{% block heading %}Rites{% endblock %}
+
+{% block description %}The full list of game rites is presented below.{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for rite in game.rites.values()|_sort %}
+            <li>{{ rite|a }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

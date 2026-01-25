@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Objectives - Shadow Compass{% endblock %}
+
+{% block heading %}Objectives{% endblock %}
+
+{% block description %}The full list of game objectives is presented below.{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for objective in game.objectives.values()|_sort %}
+            <li>{{ objective|a }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

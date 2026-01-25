@@ -1,0 +1,140 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Rite: {{ rite.rite.name_|_ }} - Shadow Compass{% endblock %}
+
+{% block illustration %}
+    <img src="{{ root }}images/{{ rite.rite.icon }}.png" alt="{{ rite.rite.icon }}" class="resource" />
+{% endblock %}
+
+{% block category %}Rites{% endblock %}
+
+{% block heading %}{{ rite.rite.name_|_ }}{% endblock %}
+
+{% block description %}{% endblock %}
+
+{% block content %}
+    <blockquote>{{ rite.rite.text_|_ }}</blockquote>
+    <p><strong>ID:</strong> {{ rite.rite.id }}</p>
+    <p><strong>Type:</strong> {% if rite.rite.type %}{{ rite.rite.type.label }}{% else %}<em>None</em>{% endif %}</p>
+    <p><strong>Tips:</strong> {% if rite.rite.tips %}{{ rite.rite.tips }}{% else %}<em>None</em>{% endif %}</p>
+    <p><strong>Tag Tips:</strong> {% if rite.rite.tag_tips %}{{ rite.rite.tag_tips|map('t')|join(', ') }}{% else %}<em>None</em>{% endif %}</p>
+    <p><strong>Tag Tips Up:</strong> {% if rite.rite.tag_tips_up and rite.rite.tag_tips_up.tips %}{{ (rite.rite.tag_tips_up.type.label + ', ') if rite.rite.tag_tips_up.type else '' }}{{ rite.rite.tag_tips_up.tips|map('t')|join(', ') }}{% else %}<em>None</em>{% endif %}</p>
+    <p><strong>Tag Tips Text:</strong> {% if not rite.rite.tips_text %}<em>None</em>{% endif %}</p>
+    {% if rite.rite.tips_text %}
+        <ul>
+            {% for tip_text in rite.rite.tips_text %}
+                <li>{{ rite.rite.get_tips_text(loop.index0)|_ }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <p><strong>Random Text:</strong> {% if not rite.rite.random_text %}<em>None</em>{% endif %}</p>
+    {% if rite.rite.random_text %}
+        <ul>
+            {% for r, random_text in rite.rite.random_text.items() %}
+                <li><code>{{ r }}</code>: {{ rite.rite.get_random_text_text(r)|_ }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    <p><strong>Random Text Up:</strong> {% if not rite.rite.random_text_up %}<em>None</em>{% endif %}</p>
+    {% if rite.rite.random_text_up %}
+        <ul>
+        {% for r, random_text_up in rite.rite.random_text_up.items() %}
+            <li>
+                <code>{{ r }}</code><br />
+                <strong>Text:</strong> {{ rite.rite.get_random_text_up_text(r)|_ }}<br />
+                <strong>Type:</strong> {{ random_text_up.type.label }}<br />
+                <strong>Type Tips:</strong> {{ rite.rite.get_random_text_up_type_tips(r)|_ }}<br />
+                <strong>Low Target:</strong> {{ random_text_up.low_target }}<br />
+                <strong>Low Target Tips:</strong> {{ rite.rite.get_random_text_up_low_target_tips(r)|_ }}<br />
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
+    <p><strong>Marked as New Only on First Occurrence:</strong> {{ rite.rite.once_new }}</p>
+    <p><strong>Starts Automatically:</strong> {{ macros.bool(rite.rite.auto_begin) }}</p>
+    <p><strong>Triggers Result Automatically:</strong> {{ macros.bool(rite.rite.auto_result) }}</p>
+    <p><strong>Duration:</strong> {{ rite.rite.round_number }} days</p>
+    <p><strong>Waits For:</strong> {{ rite.rite.waiting_round }} days</p>
+
+    <h3>Actions When Wait Expires</h3>
+    {% if not rite.rite.waiting_round_end_action %}
+        <p><em>This rite has no actions when the wait expires.</em></p>
+    {% endif %}
+    {{ macros.outcomes(rite.rite.waiting_round_end_action, None, None) }}
+
+    <h3>Slots</h3>
+    <!-- TODO Make more visual? -->
+    {% if rite.rite.cards_slot %}
+        <ul>
+            {% for slot_num, card_slot in rite.rite.cards_slot.items() %}
+                <li>
+                    Slot #{{ slot_num|slotnum }}<br />
+                    <strong>Text:</strong> {{ rite.rite.get_card_slot_text(slot_num)|_ }}<br />
+                    <strong>Locks:</strong> {{ macros.bool(card_slot.open_adsorb) }}<br />
+                    <strong>Is Key:</strong> {{ macros.bool(card_slot.is_key) }}<br />
+                    <strong>Is Empty:</strong> {{ macros.bool(card_slot.is_empty) }}<br />
+                    <strong>Is Enemy:</strong> {{ macros.bool(card_slot.is_enemy) }}<br />
+                    <strong>Conditions:</strong>
+                    {% if card_slot.condition %}
+                        {{ macros.conditions(card_slot.condition) }}
+                    {% else %}
+                        <em>None</em><br />
+                    {% endif %}
+                    <strong>Pops:</strong>
+                    {% if card_slot.pops %}
+                        <ul>
+                            {% for pop in card_slot.pops %}
+                                <li>
+                                    <strong>Condition:</strong>
+                                    {% if pop.condition %}
+                                        {{ macros.conditions(pop.condition) }}
+                                    {% else %}
+                                        <em>None</em><br />
+                                    {% endif %}
+                                    <strong>Action:</strong>
+                                    {% if pop.action %}
+                                        {{ macros.effects(pop.action) }}
+                                    {% else %}
+                                        <em>None</em>
+                                    {% endif %}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <em>None</em>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p><em>This rite has no slots.</em></p>
+    {% endif %}
+
+    <h3>Activation Conditions</h3>
+    {% if not rite.rite.open_conditions %}
+        <p><em>This rite has no activation conditions.</em></p>
+    {% endif %}
+    {% for open_condition in rite.rite.open_conditions %}
+        <blockquote>
+            <p><strong>Tips:</strong> {{ rite.rite.get_open_conditions_tips(loop.index0)|_ }}</p>
+            <p><strong>Conditions:</strong></p>
+            {{ macros.conditions(open_condition.condition) }}
+        </blockquote>
+    {% endfor %}
+
+    <h3>Outcome</h3>
+    {% for outcome_name, settlements, loc_func_title, loc_func_text in (
+        ('Prior', rite.rite.settlement_prior, rite.rite.get_settlement_prior_title, rite.rite.get_settlement_prior_text),
+        ('Regular', rite.rite.settlement, rite.rite.get_settlement_title, rite.rite.get_settlement_text),
+        ('Extra', rite.rite.settlement_extre, rite.rite.get_settlement_extre_title, rite.rite.get_settlement_extre_text),
+    ) %}
+        <h4>{{ outcome_name }}</h4>
+        {% if not settlements %}<p><em>This rite has no {{ outcome_name|lower }} outcome.</em></p>{% endif %}
+        {{ macros.outcomes(settlements, loc_func_title, loc_func_text) }}
+    {% endfor %}
+
+    <h3>References</h3>
+    {{ macros.common_references(rite, 'rite') }}
+{% endblock %}

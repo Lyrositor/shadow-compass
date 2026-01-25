@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Upgrades - Shadow Compass{% endblock %}
+
+{% block heading %}Upgrades{% endblock %}
+
+{% block description %}The full list of game upgrades is presented below.{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for upgrade in game.upgrades.values()|_sort %}
+            <li>{{ upgrade|a }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

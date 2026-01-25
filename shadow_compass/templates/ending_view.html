@@ -1,0 +1,18 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Ending: {{ ending.name|_ }} - Shadow Compass{% endblock %}
+
+{% block category %}Endings{% endblock %}
+
+{% block heading %}{{ ending.name|_ }}{% endblock %}
+
+{% block content %}
+    <p><strong>ID:</strong> {{ ending.id }}</p>
+
+    <strong>TODO</strong>
+
+    <h3>References</h3>
+    {{ macros.common_references(ending, 'ending') }}
+{% endblock %}

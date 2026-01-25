@@ -1,0 +1,18 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Upgrade: {{ upgrade.upgrade.name_|_ }} - Shadow Compass{% endblock %}
+
+{% block category %}Upgrades{% endblock %}
+
+{% block heading %}{{ upgrade.upgrade.name_|_ }}{% endblock %}
+
+{% block content %}
+    <p><strong>ID:</strong> {{ upgrade.upgrade.id }}</p>
+
+    <strong>TODO</strong>
+
+    <h3>References</h3>
+    {{ macros.common_references(upgrade, 'upgrade') }}
+{% endblock %}

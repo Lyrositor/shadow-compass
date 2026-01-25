@@ -1,0 +1,80 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Card: {{ card.card.name_|_ }} - Shadow Compass{% endblock %}
+
+{% block illustration %}
+    {% set resources = card.get_resources(game.image_resources) %}
+    <div id="card-illustrations">
+        {% for rarity, resource in resources %}
+            <div class="card-illustration {% if loop.index0 == 0 %}open{% endif %}">
+                <img src="{{ root }}images/card_background_{{rarity.name|lower}}.png" alt="{{ rarity.label }}" />
+                <img src="{{ root }}images/{{ resource }}.png" alt="{{ resource }}" width="192" />
+            </div>
+        {% endfor %}
+    </div>
+    {% if resources|length > 1 %}
+        <div id="card-illustration-controls">
+            <a href="#" id="card-illustration-controls-left" class="outline secondary">&lt;</a>
+            <a href="#" id="card-illustration-controls-right" class="outline secondary">&gt;</a>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% block category %}Cards{% endblock %}
+
+{% block heading %}{{ card.card.name_|_ }}{% endblock %}
+
+{% block description %}{{ card.card.title_|_ }}{% endblock %}
+
+{% block content %}
+    <blockquote>{{ card.card.text_|_ }}</blockquote>
+    <p><strong>ID:</strong> {{ card.card.id }}</p>
+    <p><strong>Type:</strong> {{ card.card.type.label }}</p>
+    <p><strong>Rarity:</strong> {{ card.card.rare.label }}</p>
+    <p><strong>Expiration:</strong> {% if card.card.card_vanishing %}{{card.card.card_vanishing }} days{% else %}<em>None</em>{% endif %}</p>
+    <p><strong>On Expiration:</strong> {% if not card.card.vanish %}<em>No effect</em>{% endif %}</p>
+    {% if card.card.vanish %}
+        {{ macros.effects(card.card.vanish) }}
+    {% endif %}
+    <p><strong>Unique:</strong> {{ macros.bool(card.card.is_only) }}
+    <p><strong>SFX:</strong> {% if card.card.sfx %}<code>{{ card.card.sfx }}{% else %}<em>None</em>{% endif %}</code></p>
+    <div>
+        <p>
+            <strong>Equipment Slots:</strong>
+            {% if card.equips %}
+                <span class="slots">
+                    {% for tag in card.equips %}
+                        {{ macros.slot(tag) }}
+                    {% endfor %}
+                </span>
+            {% else %}
+                <em>None</em>
+            {% endif %}
+        </p>
+    </div>
+
+    <div class="clear"></div>
+
+    <h3>Tags</h3>
+    {% if card.tags %}
+        <div class="tags">
+            {% for tag, value in card.tags %}
+                {{ macros.tag(tag, value) }}
+            {% endfor %}
+        </div>
+    {% else %}
+        <p><em>This card has no tags.</em></p>
+    {% endif %}
+
+    <h3>Post-Rite Triggers</h3>
+    {% if not card.card.post_rite  %}
+        <p><em>This card has no post-rite triggers.</em></p>
+    {% endif %}
+    {{ macros.outcomes(card.card.post_rite, None, card.card.get_post_rite_result_text) }}
+
+    <h3>References</h3>
+
+    {{ macros.common_references(card, 'card') }}
+{% endblock %}

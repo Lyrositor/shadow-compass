@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Events - Shadow Compass{% endblock %}
+
+{% block heading %}Events{% endblock %}
+
+{% block description %}The full list of game events is presented below.{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for event in game.events.values()|_sort %}
+            <li>{{ event|a }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

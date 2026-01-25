@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Tags - Shadow Compass{% endblock %}
+
+{% block heading %}Tags{% endblock %}
+
+{% block description %}The full list of game tags is presented below, including tags that are never displayed in-game.{% endblock %}
+
+{% block content %}
+    <ul>
+        {% for tag in game.tags.values()|_sort %}
+            <li>{{ tag|a }}: {{ tag.tag.text_|_ }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}

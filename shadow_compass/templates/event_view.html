@@ -1,0 +1,67 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Event: {{ event.event.text_|_ }} - Shadow Compass{% endblock %}
+
+{% block category %}Events{% endblock %}
+
+{% block heading %}{{ event.event.text_|_ }}{% endblock %}
+
+{% block content %}
+    <p><strong>ID:</strong> {{ event.event.id }}</p>
+    <p><strong>Repeatable:</strong> {{ event.event.is_replay }}</p>
+    <p><strong>Validate Conditions on Start:</strong> {{ event.event.start_trigger }}</p>
+    <p><strong>Auto Start:</strong> {{ macros.bool(event.event.auto_start) }}</p>
+    <!-- TODO Improve this -->
+    <p><strong>Auto Start Init:</strong> {{ macros.bool(event.event.auto_start_init) if event.event.auto_start_init is not none else 'Unknown' }}</p>
+
+    <!-- TODO Improve the name of Event On -->
+    <h3>Event On</h3>
+    <ul>
+        <!-- TODO Improve these names -->
+        {% set on = event.event.on %}
+        {% if on.back_to_prev_round_end %}<li>Back to Previous Day End: {{ macros.bool(on.back_to_prev_round_end) }}</li>{% endif %}
+        {% if on.card_born %}<li>Card Born: {{ on.card_born|c }}</li>{% endif %}
+        {% if on.card_cleans %}<li>Cards Clean: {{ on.card_cleans|map('c')|join(', ') }}</li>{% endif %}
+        {% if on.close_begin_guide %}<li>Close Begin Guide: <code>{{ on.close_begin_guide }}</code></li>{% endif %}
+        {% if on.close_prompt %}<li>Close Prompt: {{ macros.bool(on.close_prompt) }}</li>{% endif %}
+        {% if on.close_wizard %}<li>Close Wizard: {{ macros.bool(on.close_wizard) }}</li>{% endif %}
+        {% if on.counter %}<li>Counter: {{ on.counter }}</li>{% endif %}
+        {% if on.game_ends %}<li>Game Ends: {{ on.game_ends|map('o')|join(', ') }}</li>{% endif %}
+        {% if on.open_card_info %}<li>Open Card Info: {{ macros.bool(on.open_card_info) }}</li>{% endif %}
+        {% if on.open_card_info_end %}<li>Open Card Info End: {{ macros.bool(on.open_card_info_end) }}</li>{% endif %}
+        {% if on.open_rite %}<li>Open Rite: {{ macros.bool(on.open_rite) }}</li>{% endif %}
+        {% if on.open_rite_end %}<li>Open Rite End: {{ on.open_rite_end|r }}</li>{% endif %}
+        {% if on.rite_can_fill %}<li>Rite Can Fill: {{ macros.bool(on.rite_can_fill) }}</li>{% endif %}
+        {% if on.rite_can_start %}<li>Rite Can Start: {{ macros.bool(on.rite_can_start) }}</li>{% endif %}
+        {% if on.rite_can_stop %}<li>Rite Can Stop: {{ macros.bool(on.rite_can_stop) }}</li>{% endif %}
+        {% if on.rite_cancel %}<li>Rite Cancel: {{ on.rite_cancel|r }}</li>{% endif %}
+        {% if on.rite_starts %}<li>Rite Starts: {{ on.rite_starts|map('r')|join(', ') }}</li>{% endif %}
+        {% if on.rite_ends %}<li>Rite Ends: {{ on.rite_ends|map('r')|join(', ') }}</li>{% endif %}
+        {% if on.round_begin_ba %}<li>Round Begin BA: {{ on.round_begin_bas|join(', ') }}</li>{% endif %}
+        {% if on.show_wizard_option %}<li>Show Wizard Option: {{ macros.bool(on.show_wizard_option) }}</li>{% endif %}
+        {% if on.sudan_redraw_start %}<li>Sultan Card Redraw Start: {{ macros.bool(on.sudan_redraw_start) }}</li>{% endif %}
+    </ul>
+
+    <h3>Activation Conditions</h3>
+    {% if not event.event.condition %}
+        <p><em>This event has no activation conditions.</em></p>
+    {% else %}
+        {{ macros.conditions(event.event.condition) }}
+    {% endif %}
+
+    <h3>Outcome Actions</h3>
+    {% if not event.event.settlement %}
+        <p><em>This event has no outcome actions.</em></p>
+    {% else %}
+        {% for settlement in event.event.settlement %}
+            {% if settlement.action %}
+                {{ macros.effects(settlement.action) }}
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+    <h3>References</h3>
+    {{ macros.common_references(event, 'event') }}
+{% endblock %}

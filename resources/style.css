@@ -1,0 +1,129 @@
+[data-theme="light"] {
+    --pico-nav-background-color: #fcf6fd;
+}
+
+/* @todo proper dark mode */
+[data-theme="dark"] {
+    --pico-nav-background-color: #1f0324;
+}
+
+#header, #footer {
+    text-align: center;
+}
+
+#header nav > ul, #footer nav > ul {
+    margin: 0 auto;
+}
+
+#languages ul li {
+    font-size: .625em;
+    font-style: italic;
+    padding-bottom: calc(var(--pico-spacing) * .25);
+    padding-top: calc(var(--pico-spacing) * .25);
+}
+
+#categories ul {
+    background-color: var(--pico-nav-background-color);
+    border-radius: var(--pico-border-radius);
+    padding: 0 calc(var(--pico-spacing) * .25);
+}
+
+#categories li {
+    padding: calc(var(--pico-nav-element-spacing-vertical) * .5) var(--pico-nav-element-spacing-horizontal);
+}
+
+#categories li a {
+    padding-bottom: 0;
+    padding-top: 0;
+}
+
+#category {
+    color: var(--pico-primary);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: .0625em;
+    margin-bottom: calc(var(--pico-spacing) * .25);
+    text-transform: uppercase;
+}
+
+#heading {
+    margin-bottom: calc(var(--pico-spacing) * .5);
+}
+
+#footer {
+    clear: both;
+}
+
+#footer p {
+    color: var(--pico-muted-color);
+}
+
+#illustration {
+    float: right;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+}
+
+#illustration img {
+    display: block;
+}
+
+.card-illustration {
+    display: none;
+    height: 418px;
+    position: relative;
+    width: 192px;
+}
+
+.card-illustration.open {
+    display: block;
+}
+
+.card-illustration > img {
+    left: 0;
+    position: absolute;
+    top: 0;
+}
+
+#card-illustration-controls {
+    padding: calc(var(--pico-spacing) * 0.25);
+    text-align: center;
+}
+
+#card-illustration-controls a {
+    margin: 0 var(--pico-spacing);
+}
+
+.equipment {
+    display: inline-flex;
+}
+
+.tags {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: var(--pico-spacing);
+    line-height: 2em;
+}
+
+.tag {
+    flex: 0 1 auto;
+    min-width: 10em;
+}
+
+.tag img {
+    height: 2em;
+    margin-right: calc(var(--pico-spacing) * 0.25);
+    width: 2em
+}
+
+.slots {
+    display: inline-flex;
+    column-gap: var(--pico-spacing);
+    line-height: 1.5em;
+}
+
+.slot img {
+    height: 1.5em;
+    margin-right: calc(var(--pico-spacing) * 0.25);
+    width: 1.5em;
+}

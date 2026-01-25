@@ -1,0 +1,38 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Loot: {{ loot.loot.name_|_ }} - Shadow Compass{% endblock %}
+
+{% block category %}Loot{% endblock %}
+
+{% block heading %}{{ loot.loot.name_|_ }}{% endblock %}
+
+{% block content %}
+    <p><strong>ID:</strong> {{ loot.loot.id }}</p>
+    <p><strong>Repeatable:</strong> {{ loot.loot.repeat }}</p>
+    <p><strong>Type:</strong> {{ loot.loot.type.label }}</p>
+    <p><strong>Items:</strong></p>
+    <ul>
+        {% for item in loot.loot.item %}
+            <li>
+                {% if item.type.value == 'card' %}
+                    {{ item.id|c }}
+                {% elif item.type.value == 'event' %}
+                    {{ item.id|e }}
+                {% elif item.type.value == 'loot' %}
+                    {{ item.id|l }}
+                {% elif item.type.value == 'rite' %}
+                    {{ item.id|r }}
+                {% endif %}
+                ({{ item.num }}, weight: {{ item.weight }})
+                {% if item.condition %}
+                    {{ macros.conditions(item.condition) }}
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h3>References</h3>
+    {{ macros.common_references(loot, 'loot') }}
+{% endblock %}

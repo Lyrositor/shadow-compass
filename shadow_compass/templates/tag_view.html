@@ -1,0 +1,53 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Tag: {{ tag.tag.name_|_ }} - Shadow Compass{% endblock %}
+
+{% block illustration %}
+    <img src="{{ root }}images/{{ tag.tag.resource }}.png" alt="{{ tag.tag.resource }}" width="64" height="64" class="resource" />
+{% endblock %}
+
+{% block category %}Tags{% endblock %}
+
+{% block heading %}{{ tag.tag.name_|_ }}{% endblock %}
+
+{% block description %}{{ tag.tag.text_|_ }}{% endblock %}
+
+{% block content %}
+    <p><strong>ID:</strong> {{ tag.tag.id }}</p>
+    <p><strong>Code:</strong> <code>{{ tag.tag.code }}</code></p>
+    <p><strong>Type:</strong> {{ tag.tag.type.label }}</p>
+    <p><strong>Visible?</strong> {{ macros.bool(tag.tag.can_visible) }}</p>
+    <p><strong>Can Add?</strong> {{ macros.bool(tag.tag.can_add) }}</p>
+    <p><strong>Can Inherit?</strong> {{ macros.bool(tag.tag.can_inherit) }}</p>
+    <p><strong>Can Go to Zero and Below?</strong> {{ macros.bool(tag.tag.can_nagative_and_zero) }}</p>
+    <p><strong>SFX:</strong> {% if tag.tag.tag_sfx %}<code>{{ tag.tag.tag_sfx }}{% else %}<em>None</em>{% endif %}</code></p>
+    <p><strong>Rank:</strong> {{ tag.tag.tag_rank }}</p>
+    <p><strong>Prevents Rites from Grabbing:</strong> {{ macros.bool(tag.tag.prevents_rites_from_grabbing) }}</p>
+
+    <h3>Cards</h3>
+    {% if tag.cards %}
+        <p>This tag is set on the following cards:</p>
+        {{ macros.entry_list(tag.cards) }}
+    {% else %}
+        <p>This tag is not set on any cards.</p>
+    {% endif %}
+    {% if tag.card_equips %}
+        <h4>Slots</h4>
+        <p>This tag is a slot on the following cards:</p>
+        {{ macros.entry_list(tag.card_equips) }}
+    {% endif %}
+
+    <h3>Rites</h3>
+    {% if tag.rite_tips %}
+        <p>This tag is used as a tip for the following rites:</p>
+        {{ macros.entry_list(tag.rite_tips) }}
+    {% else %}
+        <p>This tag is not used for any rites.</p>
+    {% endif %}
+
+    <h3>References</h3>
+
+    {{ macros.common_references(tag, 'tag') }}
+{% endblock %}

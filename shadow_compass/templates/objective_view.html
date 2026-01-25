@@ -1,0 +1,15 @@
+{% import "_macros.html" as macros %}
+
+{% extends "base.html" %}
+
+{% block title %}Objective: {{ objective.quest.name_|_ }} - Shadow Compass{% endblock %}
+
+{% block category %}Objectives{% endblock %}
+
+{% block heading %}{{ objective.quest.name_|_ }}{% endblock %}
+
+{% block content %}
+    <p><strong>ID:</strong> {{ objective.quest.id }}</p>
+
+    <strong>TODO</strong>
+{% endblock %}
