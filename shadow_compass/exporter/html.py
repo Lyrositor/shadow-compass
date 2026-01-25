@@ -131,7 +131,7 @@ def _a(ctx: Context, entry: Any) -> Markup:
     if isinstance(entry, Undefined):
         return Markup('???')
     elif isinstance(entry, Entry):
-        return Markup(f'<a href="/{escape(_lang(ctx))}/{escape(entry.key)}">{escape(_translate(ctx, entry.label))}</a>')
+        return Markup(f'<a href="{ctx['root']}{escape(_lang(ctx))}/{escape(entry.key)}/">{escape(_translate(ctx, entry.label))}</a>')
     raise ValueError(f'Unexpected entry type: {type(entry)}')
 
 
