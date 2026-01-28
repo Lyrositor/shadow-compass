@@ -112,13 +112,11 @@ class Event:
 
     @property
     def text_(self) -> Loc:
-        # TODO Provide alt localisations for these?
         return Loc(self.text, f'event_{self.id}_text')
 
     def get_settlement_tips_text(self, idx: int) -> Loc:
         return Loc(self.settlement[idx].tips_text or '', f'event_{self.id}_settlement_{idx}_tips_text')
 
-    # TODO Process these elsewhere
     def event_on_references(self) -> Iterable[Reference]:
         yield from self.on.references()
 
