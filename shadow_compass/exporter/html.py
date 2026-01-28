@@ -103,6 +103,7 @@ class HtmlExporter:
         env.filters['o'] = _o
         env.filters['r'] = _r
         env.filters['t'] = _t
+        env.filters['u'] = _u
         env.filters['_'] = _translate
         env.filters['_sort'] = _translatesort
         env.filters['gametext'] = _gametext
@@ -169,6 +170,12 @@ def _r(ctx: Context, rite_id: int) -> Markup:
 def _t(ctx: Context, tag: str) -> Markup:
     game: GameDb = ctx['game']
     return _a(ctx, game.tags.get(tag) or Undefined(f'Tag {tag}'))
+
+
+@pass_context
+def _u(ctx: Context, upgrade_id: int) -> Markup:
+    game: GameDb = ctx['game']
+    return _a(ctx, game.upgrades.get(upgrade_id) or Undefined(f'Upgrade {upgrade_id}'))
 
 
 @pass_context

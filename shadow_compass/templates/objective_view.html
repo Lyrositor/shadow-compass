@@ -8,8 +8,31 @@
 
 {% block heading %}{{ objective.quest.name_|_ }}{% endblock %}
 
+{% block illustration %}
+    <img src="{{ root }}images/{{ objective.quest.icon }}.png" alt="{{ objective.quest.icon }}" width="192" class="resource" />
+{% endblock %}
+
+{% block description %}{{ objective.quest.text_|_ }}{% endblock %}
+
 {% block content %}
     <p><strong>ID:</strong> {{ objective.quest.id }}</p>
+    <p><strong>Upgrade Point:</strong> {{ objective.quest.upgrade_point }}</p>
+    <p><strong>Pre-Requisite:</strong> {% if objective.quest.pre %}<code>{{ objective.quest.pre }}</code>{% else %}<em>None</em>{% endif %}</p>
+    <p><strong>Favour Text:</strong> {{ objective.quest.favour_text_|_ }}</p>
 
-    <strong>TODO</strong>
+    {% if objective.quest.target %}
+        <p><strong>Targets:</strong></p>
+        {% for target in objective.quest.target %}
+            <blockquote>
+                <p><strong>Text:</strong> {{ objective.quest.get_target_text(loop.index0)|_ }}</p>
+                {% if target.show_counter %}
+                    <p><strong>Show Counter:</strong> <code>{{ target.show_counter }}</code></p>
+                {% endif %}
+                {% if target.condition %}
+                    <p><strong>Conditions:</strong></p>
+                    {{ macros.conditions(target.condition) }}
+                {% endif %}
+            </blockquote>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

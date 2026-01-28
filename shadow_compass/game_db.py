@@ -37,11 +37,13 @@ class Entry(ABC):
     card_vanish_effects: list[CardEntry] = field(default_factory=list)
     card_post_rite_conditions: list[CardEntry] = field(default_factory=list)
     card_post_rite_effects: list[CardEntry] = field(default_factory=list)
+    ending_conditions: list[EndingEntry] = field(default_factory=list)
     event_triggers: list[EventEntry] = field(default_factory=list)
     event_conditions: list[EventEntry] = field(default_factory=list)
     event_effects: list[EventEntry] = field(default_factory=list)
     loot_items: list[LootEntry] = field(default_factory=list)
     loot_conditions: list[LootEntry] = field(default_factory=list)
+    objective_conditions: list[ObjectiveEntry] = field(default_factory=list)
     rite_conditions: list[RiteEntry] = field(default_factory=list)
     rite_effects: list[RiteEntry] = field(default_factory=list)
 
@@ -276,6 +278,9 @@ class GameDb:
             ):
                 _apply_references(rite, references, attr_name, cards, endings, events, loots, rites, tags, upgrades)
 
+        for ending in endings.values():
+            _apply_references(ending, ending.over.condition_references(), 'ending_conditions',  cards, endings, events, loots, rites, tags, upgrades)
+
         for event in events.values():
             for references, attr_name in (
                 (event.event.event_on_references(), 'event_triggers'),
@@ -285,8 +290,14 @@ class GameDb:
                 _apply_references(event, references, attr_name, cards, endings, events, loots, rites, tags, upgrades)
 
         for loot in loots.values():
-            _apply_references(loot, loot.loot.item_references(), 'loot_items', cards, endings, events, loots, rites, tags, upgrades)
-            _apply_references(loot, loot.loot.condition_references(), 'loot_conditions', cards, endings, events, loots, rites, tags, upgrades)
+            for references, attr_name in (
+                (loot.loot.item_references(), 'loot_items'),
+                (loot.loot.condition_references(), 'loot_conditions'),
+            ):
+                _apply_references(loot, references, attr_name, cards, endings, events, loots, rites, tags, upgrades)
+
+        for objective in objectives.values():
+            _apply_references(objective, objective.quest.condition_references(), 'objective_conditions', cards, endings, events, loots, rites, tags, upgrades)
 
         localisations = json.load(additional_localisations_path.open(encoding='utf-8'))
         for lang, lang_localisations in config.localisations.items():

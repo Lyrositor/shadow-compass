@@ -8,10 +8,7 @@
     {% set resources = card.get_resources(game.image_resources) %}
     <div id="card-illustrations">
         {% for rarity, resource in resources %}
-            <div class="card-illustration {% if loop.index0 == 0 %}open{% endif %}">
-                <img src="{{ root }}images/card_background_{{rarity.name|lower}}.png" alt="{{ rarity.label }}" />
-                <img src="{{ root }}images/{{ resource }}.png" alt="{{ resource }}" width="192" />
-            </div>
+            {{ macros.card_illustration(resource, rarity, loop.index0 == 0) }}
         {% endfor %}
     </div>
     {% if resources|length > 1 %}
@@ -73,8 +70,6 @@
         <p><em>This card has no post-rite triggers.</em></p>
     {% endif %}
     {{ macros.outcomes(card.card.post_rite, None, card.card.get_post_rite_result_text) }}
-
-    <h3>References</h3>
 
     {{ macros.common_references(card, 'card') }}
 {% endblock %}

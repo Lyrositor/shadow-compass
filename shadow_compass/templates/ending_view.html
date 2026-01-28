@@ -8,11 +8,31 @@
 
 {% block heading %}{{ ending.name|_ }}{% endblock %}
 
+{% block description %}{{ ending.sub_name|_ }}{% endblock %}
+
 {% block content %}
     <p><strong>ID:</strong> {{ ending.id }}</p>
+    <p><strong>Outcome:</strong> {{ ending.over.success.label }}</p>
+    <p><strong>Open After Story:</strong> {{ macros.bool(ending.over.open_after_story) }}</p>
+    <p><strong>Manual Prompt:</strong> {{ macros.bool(ending.over.manual_prompt) }}</p>
+    {% if ending.over.text %}
+        <p><strong>Text:</strong></p> {{ ending.text|_|gametext }}
+    {% endif %}
+    {% if ending.over.extra_text %}
+        <p><strong>Extra Text:</strong></p>
+        {% for i, text_extra in ending.over.extra_text %}
+            <blockquote>
+                {% if text_extra.condition %}
+                    <p><strong>Conditions:</strong></p>
+                    {{ macros.conditions(text_extra.condition) }}
+                {% endif %}
+                {% if text_extra.result_text %}
+                    <p><strong>Result Text:</strong></p>
+                    {{ ending.get_extra_text(i)|_|gametext }}
+                {% endif %}
+            </blockquote>
+        {% endfor %}
+    {% endif %}
 
-    <strong>TODO</strong>
-
-    <h3>References</h3>
     {{ macros.common_references(ending, 'ending') }}
 {% endblock %}

@@ -9,7 +9,7 @@
 {% block content %}
     <ul>
         {% for ending in game.endings.values()|_sort %}
-            <li>{{ ending|a }}</li>
+            <li>{{ ending|a }}{% if ending.sub_name|_ %}, {{ ending.sub_name|_ }}{% endif %}</li>
         {% endfor %}
     </ul>
 {% endblock %}

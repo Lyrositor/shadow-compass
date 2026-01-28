@@ -45,10 +45,10 @@
     <footer id="footer" class="container">
         <nav id="languages">
             <ul>
-                <li><a href="{{ root }}zhCN/{{ key }}/" class="secondary">简体中文</a></li>
-                <li><a href="{{ root }}zhTW/{{ key }}/" class="secondary">繁體中文</a></li>
-                <li><a href="{{ root }}en/{{ key }}/" class="secondary">English</a></li>
-                <li><a href="{{ root }}ja/{{ key }}/" class="secondary">日本語</a></li>
+                <li><a href="{{ root }}zhCN/{% if key %}{{ key }}/{% endif %}" class="secondary">简体中文</a></li>
+                <li><a href="{{ root }}zhTW/{% if key %}{{ key }}/{% endif %}" class="secondary">繁體中文</a></li>
+                <li><a href="{{ root }}en/{% if key %}{{ key }}/{% endif %}" class="secondary">English</a></li>
+                <li><a href="{{ root }}ja/{% if key %}{{ key }}/{% endif %}" class="secondary">日本語</a></li>
             </ul>
         </nav>
         <hr />

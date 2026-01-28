@@ -8,11 +8,22 @@
 
 {% block heading %}{{ upgrade.upgrade.name_|_ }}{% endblock %}
 
+{% block illustration %}
+    {% set linked_card = game.cards[upgrade.upgrade.link_card].card %}
+    {{ macros.card_illustration(linked_card.resource, linked_card.rare, true) }}
+{% endblock %}
+
+{% block description %}{{ upgrade.upgrade.text_|_ }}{% endblock %}
+
 {% block content %}
     <p><strong>ID:</strong> {{ upgrade.upgrade.id }}</p>
+    <p><strong>Cost:</strong> {{ upgrade.upgrade.cost }}</p>
+    <p><strong>Incompatible:</strong> {% if upgrade.upgrade.incompatible %}{{ upgrade.upgrade.incompatible|u }}{% else %}<em>None</em>{% endif %}</p>
+    <p><strong>Linked Card:</strong> {{ upgrade.upgrade.link_card|c }}</p>
+    <p><strong>Conditions:</strong> {% if not upgrade.upgrade.condition %}<em>None</em>{% endif %}</p>
+    {{ macros.conditions(upgrade.upgrade.condition) }}
+    <p><strong>Effects:</strong></p>
+    {{ macros.effects(upgrade.upgrade.effect) }}
 
-    <strong>TODO</strong>
-
-    <h3>References</h3>
     {{ macros.common_references(upgrade, 'upgrade') }}
 {% endblock %}

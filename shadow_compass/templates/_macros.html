@@ -24,79 +24,96 @@
     </ul>
 {% endmacro %}
 
+{%- macro card_illustration(resource, rarity, open) %}
+    <div class="card-illustration {% if open %}open{% endif %}">
+        <img src="{{ root }}images/card_background_{{rarity.name|lower}}.png" alt="{{ rarity.label }}" />
+        <img src="{{ root }}images/{{ resource }}.png" alt="{{ resource }}" width="192" />
+    </div>
+{% endmacro %}
+
 {%- macro common_references(entry, label) -%}
-    <h4>Referenced in Event Triggers</h4>
-    {% if entry.event_triggers %}
-        <p>This {{ label }} is used as an event trigger for the following events.</p>
-        {{ entry_list(entry.event_triggers) }}
-    {% else %}
-        <p><em>This {{ label }} is not used in any event triggers.</em></p>
-    {% endif %}
+    {% set has_conditions = entry.card_post_rite_conditions or entry.ending_conditions or entry.event_conditions or entry.loot_conditions or entry.objective_conditions or entry.rite_conditions %}
+    {% set has_effects = entry.card_vanish_effects or entry.card_post_rite_effects or entry.event_effects or entry.rite_effects %}
+    {% set has_references = has_conditions or has_effects or entry.event_triggers or entry.loot_items %}
 
-    <h4>Loot</h4>
-    {% if entry.loot_items %}
-        <p>This {{ label }} drops from the following loot:</p>
-        <ul>
-            {% for loot in entry.loot_items %}
-                <li>{{ loot|a }}</li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p><em>This {{ label }} does not drop from any loot.</em></p>
-    {% endif %}
+    {% if has_references %}
+        <h3>References</h3>
 
-    <h4>Referenced in Conditions</h4>
-    {% if entry.card_post_rite_conditions or entry.event_conditions or entry.loot_conditions or entry.rite_conditions %}
-        <p>This {{ label }} is used in conditions for the following entities.</p>
-    {% else %}
-        <p><em>This {{ label }} is not used in any conditions.</em></p>
-    {% endif %}
+        {% if has_conditions %}
+            <h4>Referenced in Conditions</h4>
+            <p>This {{ label }} is used in conditions for the following entities.</p>
 
-    {% if entry.card_post_rite_conditions %}
-        <h5>Card Post-Rite Triggers</h5>
-        {{ entry_list(entry.card_post_rite_conditions) }}
-    {% endif %}
+            {% if entry.card_post_rite_conditions %}
+                <h5>Card Post-Rite Triggers</h5>
+                {{ entry_list(entry.card_post_rite_conditions) }}
+            {% endif %}
 
-    {% if entry.event_conditions %}
-        <h5>Events</h5>
-        {{ entry_list(entry.event_conditions) }}
-    {% endif %}
+            {% if entry.ending_conditions %}
+                <h5>Endings</h5>
+                {{ entry_list(entry.ending_conditions) }}
+            {% endif %}
 
-    {% if entry.loot_conditions %}
-        <h5>Loot</h5>
-        {{ entry_list(entry.loot_conditions) }}
-    {% endif %}
+            {% if entry.event_conditions %}
+                <h5>Events</h5>
+                {{ entry_list(entry.event_conditions) }}
+            {% endif %}
 
-    {% if entry.rite_conditions %}
-        <h5>Rites</h5>
-        {{ entry_list(entry.rite_conditions) }}
-    {% endif %}
+            {% if entry.objective_conditions %}
+                <h5>Objectives</h5>
+                {{ entry_list(entry.objective_conditions) }}
+            {% endif %}
 
-    <h4>Referenced in Effects</h4>
-    {% if entry.card_vanish_effects or entry.event_effects or entry.card_post_rite_effects or entry.rite_effects %}
-        <p>This {{ label }} is used in effects for the following entities.</p>
-    {% else %}
-        <p><em>This {{ label }} is not used in any effects.</em></p>
-    {% endif %}
+            {% if entry.loot_conditions %}
+                <h5>Loot</h5>
+                {{ entry_list(entry.loot_conditions) }}
+            {% endif %}
 
-    {% if entry.card_vanish_effects %}
-        <h5>Card Vanish</h5>
-        {{ entry_list(entry.card_vanish_effects) }}
-    {% endif %}
+            {% if entry.rite_conditions %}
+                <h5>Rites</h5>
+                {{ entry_list(entry.rite_conditions) }}
+            {% endif %}
+        {% endif %}
 
-    {% if entry.card_post_rite_effects %}
-        <h5>Card Post-Rite Triggers</h5>
-        {{ entry_list(entry.card_post_rite_effects) }}
-    {% endif %}
+        {% if has_effects %}
+            <h4>Referenced in Effects</h4>
+            <p>This {{ label }} is used in effects for the following entities.</p>
 
-    {% if entry.event_effects %}
-        <h5>Events</h5>
-        {{ entry_list(entry.event_effects) }}
-    {% endif %}
+            {% if entry.card_vanish_effects %}
+                <h5>Card Vanish</h5>
+                {{ entry_list(entry.card_vanish_effects) }}
+            {% endif %}
 
-    {% if entry.rite_effects %}
-        <h5>Rites</h5>
-        {{ entry_list(entry.rite_effects) }}
+            {% if entry.card_post_rite_effects %}
+                <h5>Card Post-Rite Triggers</h5>
+                {{ entry_list(entry.card_post_rite_effects) }}
+            {% endif %}
+
+            {% if entry.event_effects %}
+                <h5>Events</h5>
+                {{ entry_list(entry.event_effects) }}
+            {% endif %}
+
+            {% if entry.rite_effects %}
+                <h5>Rites</h5>
+                {{ entry_list(entry.rite_effects) }}
+            {% endif %}
+        {% endif %}
+
+        {% if entry.event_triggers %}
+            <h4>Referenced in Event Triggers</h4>
+            <p>This {{ label }} is used as an event trigger for the following events.</p>
+            {{ entry_list(entry.event_triggers) }}
+        {% endif %}
+
+        {% if entry.loot_items %}
+            <h4>Loot</h4>
+            <p>This {{ label }} drops from the following loot:</p>
+            <ul>
+                {% for loot in entry.loot_items %}
+                    <li>{{ loot|a }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     {% endif %}
 {% endmacro %}
 
@@ -486,7 +503,7 @@
     {% elif eff.cls == 'SlideEffect' %}
         Slide: <code>{{ eff.value }}</code>
     {% elif eff.cls == 'SteamAchievementEffect' %}
-        Steam Achievement: {{ eff.value }}
+        Steam Achievement: <code>{{ eff.value }}</code>
     {% elif eff.cls == 'SuccessEffect' %}
         Success: {{ effects(eff.value) }}
     {% elif eff.cls == 'SudanCardEffect' %}
@@ -505,7 +522,7 @@
     {% elif eff.cls == 'UpgradeCardAddTagEffect' %}
         Upgrade Card ({{ eff.card_id|c }}) with Tag {{ eff.tag|t }}: {{ eff.value }}
     {% elif eff.cls == 'UpgradeCardChangeEffect' %}
-        Upgrade Card ({{ eff.card_id|c }}) to Card (({{ eff.new_card_id|c }})
+        Upgrade Card ({{ eff.card_id|c }}) to Card ({{ eff.new_card_id|c }})
     {% elif eff.cls == 'UpgradeCoinEffect' %}
         Upgrade Starting Coins: {{ eff.value }}
     {% elif eff.cls == 'UpgradeTagAddTagEffect' %}

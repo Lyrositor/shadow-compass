@@ -107,6 +107,22 @@ class Comparator(Enum):
                 return '≥'
 
 
+class EndingOutcome(Enum):
+    DEFEAT = 0
+    NARROW_VICTORY = 1
+    GREAT_VICTORY = 2
+
+    @property
+    def label(self) -> str:
+        match self:
+            case EndingOutcome.DEFEAT:
+                return 'Failure'
+            case EndingOutcome.NARROW_VICTORY:
+                return 'Narrow Victory'
+            case EndingOutcome.GREAT_VICTORY:
+                return 'Great Victory'
+
+
 class Operator(Enum):
     ADD = '+'
     SUB = '-'
