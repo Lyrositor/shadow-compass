@@ -93,8 +93,8 @@ class HtmlExporter:
         search_results = [
             {
                 'key': entry.key,
-                'label': self.game_db.trans(entry.label, lang),
-                'description': self.game_db.trans(entry.description, lang) if entry.description else None,
+                'label': _remove_tags(self.game_db.trans(entry.label, lang)),
+                'description': _remove_tags(self.game_db.trans(entry.description, lang)) if entry.description else None,
             }
             for entry in self.game_db.get_all_entries()
         ]
@@ -206,8 +206,15 @@ def _translatesort(ctx: Context, entries: Iterable[Entry]) -> list[Entry]:
 
 
 def _gametext(text: str) -> Markup:
-    formatted_text = re.sub(r'(</?)([a-z]+)(.*?>)', _process_tag, text).replace('\n', '<br /><br />')
-    return Markup(f'<blockquote class="gametext">{formatted_text}</blockquote>' )
+    return Markup(f'<blockquote class="gametext">{_process_game_text(text)}</blockquote>' )
+
+
+def _remove_tags(text: str) -> str:
+    return re.sub(r'<[^>]+?>', '', text).replace('\n', '').strip()
+
+
+def _process_game_text(text: str) -> str:
+    return re.sub(r'(</?)([a-z]+)(.*?>)', _process_tag, text).replace('\n', '<br /><br />')
 
 
 def _process_tag(tag: re.Match[str]) -> str:

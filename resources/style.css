@@ -183,12 +183,23 @@
     right: 0;
     text-align: left;
     top: 0.5rem;
+    z-index: 1;
 }
 
 .search-result {
-    display: block;
     margin-bottom: 0.5em;
     text-decoration: none;
+}
+
+.search-result > * {
+    display: block;
+}
+
+.search-result small {
+    font-style: italic;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .search-result:last-of-type {

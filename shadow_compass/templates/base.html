@@ -2,6 +2,9 @@
 <html lang="{{lang}}" data-theme="light">
 <head>
     <meta charset="UTF-8">
+    <meta property="og:title" content="{% block meta_title %}{% endblock %}" />
+    <meta property="og:site_name" content="Shadow Compass" />
+    <meta property="og:type" content="website" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
     <title>{% block title %}Shadow Compass{% endblock %}</title>

@@ -32,6 +32,17 @@ window.onload = function () {
         cardIllustrationControlsRight.addEventListener('click', (event) => rotateCardIllustrations(event, 1))
     }
 
+    function hasParent(element, parent) {
+        let currentElement = element
+        while (currentElement && currentElement.parentNode) {
+            if (currentElement === parent) {
+                return true
+            }
+            currentElement = currentElement.parentNode
+        }
+        return false
+    }
+
     const fuse = new Fuse(SEARCH_RESULTS, {ignoreDiacritics: true, keys: ['label', 'description']})
     const search = document.getElementById('search')
     const searchResults = document.getElementById('search-results')
@@ -41,7 +52,7 @@ window.onload = function () {
         }
     })
     search.addEventListener('focusout', function (e) {
-        if (e.relatedTarget != null && !e.relatedTarget.classList.contains('search-result')) {
+        if (!hasParent(e.relatedTarget, searchResults)) {
             searchResults.style.display = 'none'
         }
     })
@@ -52,13 +63,20 @@ window.onload = function () {
         }
         searchResults.style.display = 'block'
         searchResults.innerHTML = '';
-        const results = fuse.search(e.target.value, {limit: 5})
+        const results = fuse.search(e.target.value, {limit: 10})
         for (const result of results) {
-            const resultEntry = document.createElement('a')
-            resultEntry.classList.add('search-result')
-            resultEntry.href = `${ROOT_URL}${LANG}/${result.item.key}/`
-            resultEntry.innerHTML = `${result.item.label}<br /><small>${result.item.description}</small>`
-            searchResults.appendChild(resultEntry)
+            const row = document.createElement('div')
+            row.classList.add('search-result')
+            searchResults.appendChild(row)
+
+            const link = document.createElement('a')
+            link.href = `${ROOT_URL}${LANG}/${result.item.key}/`
+            link.innerText = result.item.label
+            row.appendChild(link)
+
+            const description = document.createElement('small')
+            description.innerText = result.item.description
+            row.appendChild(description)
         }
     })
 }

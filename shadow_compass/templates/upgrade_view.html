@@ -2,6 +2,8 @@
 
 {% extends "base.html" %}
 
+{% block meta_title %}Upgrade: {{ upgrade.upgrade.name_|_ }}{% endblock %}
+
 {% block title %}Upgrade: {{ upgrade.upgrade.name_|_ }} - Shadow Compass{% endblock %}
 
 {% block category %}Upgrades{% endblock %}
