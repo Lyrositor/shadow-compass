@@ -17,11 +17,9 @@
 {% endmacro %}
 
 {%- macro entry_list(entries) -%}
-    <ul>
-        {% for entry in entries|_sort %}
-            <li>{{ entry|a }}</li>
-        {% endfor %}
-    </ul>
+    <span class="entries">
+        {{ entries|_sort|map('a')|join('') }}
+    </span>
 {% endmacro %}
 
 {%- macro card_illustration(resource, rarity, open) %}
@@ -126,20 +124,18 @@
 {% endmacro %}
 
 {%- macro outcome(outcome, loc_func_title, loc_func_text, idx) -%}
-    <blockquote>
-        {% if outcome.condition %}
-            <p><strong>Conditions:</strong></p>
-            {{ conditions(outcome.condition) }}
-        {% endif %}
-
+    <article class="outcome">
         {% if outcome.result_title %}
-            <p><strong>Result Title:</strong> {{ loc_func_title(idx)|_ if loc_func_title else outcome.result_title}}</p>
+            <header><strong>{{ loc_func_title(idx)|_ if loc_func_title else outcome.result_title}}</strong></header>
         {% endif %}
 
         {% if outcome.result_text %}
-            <p><strong>Result Text:</strong></p>
-
             {{ loc_func_text(idx)|_|gametext if loc_func_text else outcome.result_text }}
+        {% endif %}
+
+        {% if outcome.condition %}
+            <p><strong>Conditions:</strong></p>
+            {{ conditions(outcome.condition) }}
         {% endif %}
 
         {% if outcome.result %}
@@ -151,7 +147,7 @@
             <p><strong>Action:</strong></p>
             {{ effects(outcome.action) }}
         {% endif %}
-    </blockquote>
+    </article>
 {% endmacro %}
 
 {%- macro formula(elements) -%}
@@ -191,113 +187,113 @@
 
 {%- macro condition(cond) %}
     {% if cond.cls == 'NotCondition' %}
-        Not: {{ condition(cond.condition) }}
+        <em>Not</em> {{ condition(cond.condition) }}
     {% elif cond.cls == 'AllCondition' %}
-        All: {{ conditions(cond.value) }}
+        All {{ conditions(cond.value) }}
     {% elif cond.cls == 'AnyCondition' %}
-        Any: {{ conditions(cond.value) }}
+        Any {{ conditions(cond.value) }}
     {% elif cond.cls == 'DifficultyCondition' %}
-        Difficulty: {{ cond.value }}
+        Difficulty = {{ cond.value }}
     {% elif cond.cls == 'IsCondition' %}
-        Card: {{ cond.value|c }}
+        Card = {{ cond.value|c }}
     {% elif cond.cls == 'IsRiteCondition' %}
-        Rite: {{ cond.value|r }}
+        Rite = {{ cond.value|r }}
     {% elif cond.cls == 'LootCondition' %}
-        Loot: {{ cond.value|r }}
+        Loot = {{ cond.value|r }}
     {% elif cond.cls == 'RarityCondition' %}
-        Rarity: {{ cond.comparator.label }}{{ cond.value.label }}
+        Rarity {{ cond.comparator.label }} {{ cond.value.label }}
     {% elif cond.cls == 'TypeCondition' %}
-        Type: {{ cond.value.label }}
+        Type = {{ cond.value.label }}
     {% elif cond.cls == 'RoundCondition' %}
-        Day: {{ cond.comparator.label }}{{ cond.value }}
+        Day {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'FormulaCondition' %}
-        Formula: {{ formula(cond.elements) }} {{ cond.comparator.label }} {{ cond.value }}
+        {{ formula(cond.elements) }} {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'RollCondition' %}
         Roll #{{ cond.roll }}: {{ formula(cond.elements) }} {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'CardCostCondition' %}
-        Card Cost ({{ cond.value|c }}):
+        Card Cost ({{ cond.value|c }})
         {% if cond.is_multi_value %}
-            one of {{ cond.value|join(', ') }}
+            is one of ({{ cond.value|join(', ') }})
         {% else %}
-            {{ cond.comparator.label }}{{ cond.value }}
+            {{ cond.comparator.label }} {{ cond.value }}
         {% endif %}
     {% elif cond.cls == 'CounterCondition' %}
-        Counter ({{ cond.counter_id }}): {{ cond.comparator.label }}{{ cond.value }}
+        Counter ({{ cond.counter_id }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'GlobalCounterCondition' %}
-        Global Counter ({{ cond.counter_id }}): {{ cond.comparator.label }}{{ cond.value }}
+        Global Counter ({{ cond.counter_id }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HaveCardCondition' %}
-        Have Card ({{ cond.card_id|c }}): {{ cond.comparator.label }}{{ cond.value }}
+        Have Card ({{ cond.card_id|c }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HaveCardLifetimeCondition' %}
-        Have Card ({{ cond.card_id|c }}) with Lifetime: ({{ cond.comparator.label }}{{ cond.count }})
+        Have Card ({{ cond.card_id|c }}) with Lifetime ({{ cond.comparator.label }} {{ cond.count }})
     {% elif cond.cls == 'HaveCardTagCondition' %}
-        Have Card ({{ cond.card_id|c }}) with Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Have Card ({{ cond.card_id|c }}) with Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HaveCharTagCondition' %}
-        Have Character with Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Have Character with Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HaveSudanCondition' %}
-        Have Sultan Card: {{ cond.comparator.label }}{{ cond.value }}
+        Have Sultan Card {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HaveSudanLifetimeCondition' %}
-        Have Sultan Card with Lifetime: ({{ cond.comparator.label }}{{ cond.count }})
+        Have Sultan Card with Lifetime {{ cond.comparator.label }} {{ cond.count }})
     {% elif cond.cls == 'HaveTagCondition' %}
-        Have Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Have Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HaveTaggedTagCondition' %}
-        Have Tag ({{ cond.tag|t }}) with Tag ({{ cond.tagged|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Have Tag ({{ cond.tag|t }}) with Tag ({{ cond.tagged|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HandHaveCardCondition' %}
-        Hand Has Card ({{ cond.card_id|c }}): {{ cond.comparator.label }}{{ cond.value }}
+        Hand Has Card ({{ cond.card_id|c }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HandHaveCardRarityCondition' %}
-        Hand Has Card ({{ cond.card_id|c }}) with Rarity: {{ cond.comparator.label }}{{ cond.value.label }}
+        Hand Has Card ({{ cond.card_id|c }}) with Rarity {{ cond.comparator.label }} {{ cond.value.label }}
     {% elif cond.cls == 'HandHaveCardWithTagCondition' %}
-        Hand Has Card ({{ cond.card_id|c }}) with Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Hand Has Card ({{ cond.card_id|c }}) with Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HandHaveSudanCondition' %}
-        Hand Has Sultan Card: {{ cond.comparator.label }}{{ cond.value }}
+        Hand Has Sultan Card {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HandHaveTagCondition' %}
-        Hand Has Tag ({{ cond.tag|t }}{% if cond.additional_tag %} with {{ cond.additional_tag|t }}{% endif %}): {{ cond.comparator.label }}{{ cond.value }}
+        Hand Has Tag ({{ cond.tag|t }}{% if cond.additional_tag %} with {{ cond.additional_tag|t }}{% endif %}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'HandHaveTagRarityCondition' %}
-        Hand Has Tag ({{ cond.tag|t }}) with Rarity: {{ cond.comparator.label }}{{ cond.value.label }}
+        Hand Has Tag ({{ cond.tag|t }}) with Rarity {{ cond.comparator.label }} {{ cond.value.label }}
     {% elif cond.cls == 'HandHaveTaggedTagCondition' %}
-        Hand Has Tag ({{ cond.tag|t }}) with Tag ({{ cond.tagged|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Hand Has Tag ({{ cond.tag|t }}) with Tag ({{ cond.tagged|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'SudanPoolHaveCondition' %}
-        Sultan Card Pool Has: {{ cond.comparator.label }}{{ cond.value }}
+        Sultan Card Pool {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'TableHaveCardCondition' %}
-        Table Has Card ({{ cond.card_id|c }}): {{ cond.comparator.label }}{{ cond.value }}
+        Table Has Card ({{ cond.card_id|c }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'TableHaveCardTagCondition' %}
-        Table Has Card ({{ cond.card_id|c }}) with Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Table Has Card ({{ cond.card_id|c }}) with Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'TableHaveCharTagCondition' %}
-        Table Has Character with Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Table Has Character with Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'TableHaveSudanCondition' %}
-        Table Has Sultan Card: {{ cond.comparator.label }}{{ cond.value }}
+        Table Has Sultan Card {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'TableHaveTagCondition' %}
-        Table Has Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Table Has Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'TableHaveTaggedTagCondition' %}
-        Table Has Tag ({{ cond.tag|t }}) with Tag ({{ cond.tagged|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Table Has Tag ({{ cond.tag|t }}) with Tag ({{ cond.tagged|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'TagTipsCondition' %}
-        Tag Tips: {{ cond.tag|t }}
+        Tag ({{ cond.tag|t }}) Tips
     {% elif cond.cls == 'TagCostCondition' %}
-        Tag Cost ({{ cond.tag|t }}):
+        Tag ({{ cond.tag|t }}) Costs
         {% if cond.is_multi_value %}
             one of {{ cond.value|join(', ') }}
         {% else %}
-            {{ cond.comparator.label }}{{ cond.value }}
+            {{ cond.comparator.label }} {{ cond.value }}
         {% endif %}
     {% elif cond.cls == 'SlotCondition' %}
-        Slot #{{ cond.slot }}: {{ cond.value }}
+        Slot #{{ cond.slot }} = {{ cond.value }}
     {% elif cond.cls == 'SlotHasAnimalHandlingCondition' %}
-        Slot Has Animal Handling: #{{ cond.slot }}
+        Slot #{{ cond.slot }} Has Animal Handling
     {% elif cond.cls == 'SlotIsCondition' %}
-        Slot #{{ cond.slot }} Has Card: {{ cond.value|c }}
+        Slot #{{ cond.slot }} Has Card = {{ cond.value|c }}
     {% elif cond.cls == 'SlotRarityCondition' %}
-        Slot #{{ cond.slot }} Has Rarity: {{ cond.comparator.label }}{{ cond.value.label }}
+        Slot #{{ cond.slot }} Has Rarity {{ cond.comparator.label }} {{ cond.value.label }}
     {% elif cond.cls == 'SlotTypeCondition' %}
-        Slot #{{ cond.slot }} Has Type: {{ cond.value.label }}
+        Slot #{{ cond.slot }} Has Type = {{ cond.value.label }}
     {% elif cond.cls == 'SlotTagCondition' %}
-        Slot #{{ cond.slot }} Has Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Slot #{{ cond.slot }} Has Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'ParentTagCondition' %}
-        Parent Has Tag ({{ cond.tag|t }}): {{ cond.value }}
+        Parent Has Tag ({{ cond.tag|t }}) = {{ cond.value }}
     {% elif cond.cls == 'SelfTagCondition' %}
-        Self Has Tag ({{ cond.tag|t }}): {{ cond.value }}
+        Self Has Tag ({{ cond.tag|t }}) = {{ cond.value }}
     {% elif cond.cls == 'TagCondition' %}
-        Tag ({{ cond.tag|t }}): {{ cond.comparator.label }}{{ cond.value }}
+        Tag ({{ cond.tag|t }}) {{ cond.comparator.label }} {{ cond.value }}
     {% elif cond.cls == 'UpgradeUnlockedCondition' %}
-        Upgrade Unlocked: {{ cond.value|u }}
+        Unlocked Upgrade {{ cond.value|u }}
     {% else %}
         {{ log("Unknown condition: " + cond.cls) }}
         <strong>Unknown condition:</strong> <code>{{ cond.cls }}</code>
@@ -415,7 +411,7 @@
     {% elif eff.cls == 'CoinEffect' %}
         Coins: {{ eff.value }}
     {% elif eff.cls == 'ConfirmEffect' %}
-        Confirm: {{ eff.text_|_ }}
+        Confirm: {{ eff.text_|_|gametext }}
         <ul>
             <li>Confirm: {{ eff.confirm_text_|_ }}</li>
             <li>Cancel: {{ eff.cancel_text_|_ }}</li>
@@ -466,7 +462,7 @@
     {% elif eff.cls == 'NoShowEffect' %}
         No Show: {{ effects(eff.value) }}
     {% elif eff.cls == 'OptionEffect' %}
-        Options: {{ eff.text_|_ }}
+        Options: {{ eff.text_|_|gametext }}
         <ul>
             {% for item in eff.items %}
                 <li><code>{{ item.tag }}</code>: {{ eff.get_item_text(loop.index0)|_ }}</li>
@@ -475,25 +471,25 @@
     {% elif eff.cls == 'OverEffect' %}
         Ending: {{ eff.value|o }}
     {% elif eff.cls == 'PopCardEffect' %}
-        Card ({{ eff.card_id|c }}) Pops: {{ eff.text|_ }}
+        Card ({{ eff.card_id|c }}) Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopCardHandEffect' %}
-        Card in Hand ({{ eff.card_id|c }}) Pops: {{ eff.text|_ }}
+        Card in Hand ({{ eff.card_id|c }}) Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopCardRiteEffect' %}
-        Card in Rite ({{ eff.card_id|c }}) Pops: {{ eff.text|_ }}
+        Card in Rite ({{ eff.card_id|c }}) Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopSelfEffect' %}
-        Self Pops: {{ eff.text|_ }}
+        Self Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopSlotEffect' %}
-        Slot #{{ eff.slot }} Pops: {{ eff.text|_ }}
+        Slot #{{ eff.slot }} Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopSudanHandEffect' %}
-        Sultan Card in Hand Pops: {{ eff.text|_ }}
+        Sultan Card in Hand Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopTaggedEffect' %}
-        Tagged ({{ eff.tag|t }}) Pops: {{ eff.text|_ }}
+        Tagged ({{ eff.tag|t }}) Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopTaggedHandEffect' %}
-        Tagged In Hand ({{ eff.tag|t }}) Pops: {{ eff.text|_ }}
+        Tagged In Hand ({{ eff.tag|t }}) Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopThinkEffect' %}
-        Methinks Pops: {{ eff.text|_ }}
+        Methinks Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PromptEffect' %}
-        Prompt: {{ eff.text_|_ }}
+        Prompt: {{ eff.text_|_|gametext }}
     {% elif eff.cls == 'RebirthSlotEffect' %}
         Rebirth Slot #{{ eff.slot }}
     {% elif eff.cls == 'RiteEffect' %}

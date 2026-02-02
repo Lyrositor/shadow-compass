@@ -17,18 +17,26 @@
                     <img src="{{ root }}logo.png" alt="Shadow Compass" width="128" height="128" style="margin: 0 auto">
                 </a>
             </section>
-            <nav id="categories">
-                <ul>
-                    <li><a href="{{ root }}{{ lang }}/tags/">Tags</a></li>
-                    <li><a href="{{ root }}{{ lang }}/cards/">Cards</a></li>
-                    <li><a href="{{ root }}{{ lang }}/rites/">Rites</a></li>
-                    <li><a href="{{ root }}{{ lang }}/events/">Events</a></li>
-                    <li><a href="{{ root }}{{ lang }}/loots/">Loot</a></li>
-                    <li><a href="{{ root }}{{ lang }}/endings/">Endings</a></li>
-                    <li><a href="{{ root }}{{ lang }}/objectives/">Objectives</a></li>
-                    <li><a href="{{ root }}{{ lang }}/upgrades/">Upgrades</a></li>
-                </ul>
-            </nav>
+            <section>
+                <nav id="categories">
+                    <ul>
+                        <li><a href="{{ root }}{{ lang }}/tags/">Tags</a></li>
+                        <li><a href="{{ root }}{{ lang }}/cards/">Cards</a></li>
+                        <li><a href="{{ root }}{{ lang }}/rites/">Rites</a></li>
+                        <li><a href="{{ root }}{{ lang }}/events/">Events</a></li>
+                        <li><a href="{{ root }}{{ lang }}/loots/">Loot</a></li>
+                        <li><a href="{{ root }}{{ lang }}/endings/">Endings</a></li>
+                        <li><a href="{{ root }}{{ lang }}/objectives/">Objectives</a></li>
+                        <li><a href="{{ root }}{{ lang }}/upgrades/">Upgrades</a></li>
+                    </ul>
+                </nav>
+            </section>
+            <section>
+                <input type="search" id="search" name="search" placeholder="Search" aria-label="Search">
+                <div id="search-container">
+                    <article id="search-results"></article>
+                </div>
+            </section>
         </div>
     </header>
     <main class="container">
@@ -56,6 +64,11 @@
             <p><small>Sultan's Game is the sole property of Double Cross Studio. This is a fan-made resource that uses content extracted from the game.</small></p>
         </section>
     </footer>
-    <script src="{{ root }}script.js"></script>
+    <script src="{{ root }}{{ lang }}/search.js"></script>
+    <script>
+        const LANG = '{{ lang }}';
+        const ROOT_URL = '{{ root }}';
+    </script>
+    <script type="module" src="{{ root }}script.mjs"></script>
 </body>
 </html>

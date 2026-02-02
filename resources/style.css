@@ -59,9 +59,11 @@
 }
 
 #illustration {
+    background-color: var(--pico-nav-background-color);
     float: right;
     margin-bottom: 1rem;
     margin-left: 1rem;
+    padding: 0.25rem 0.5rem;
 }
 
 #illustration img {
@@ -103,6 +105,7 @@
     flex-wrap: wrap;
     column-gap: var(--pico-spacing);
     line-height: 2em;
+    margin-bottom: var(--pico-typography-spacing-vertical);
 }
 
 .tag {
@@ -126,4 +129,68 @@
     height: 1.5em;
     margin-right: calc(var(--pico-spacing) * 0.25);
     width: 1.5em;
+}
+
+.entries {
+    display: flex;
+    flex-wrap: wrap;
+    gap: calc(var(--pico-block-spacing-vertical) * 0.5) var(--pico-block-spacing-horizontal);
+    justify-content: space-between;
+}
+
+.entries a {
+    background-color: var(--pico-nav-background-color);
+    border-radius: var(--pico-border-radius);
+    display: inline-block;
+    padding: calc(var(--pico-block-spacing-vertical) * 0.25) calc(var(--pico-block-spacing-horizontal) * 0.5);
+    text-decoration: none;
+}
+
+.gametext {
+    --pico-blockquote-border-color: var(--pico-primary);
+    background-color: var(--pico-nav-background-color);
+}
+
+.outcome {
+    margin-bottom: calc(var(--pico-block-spacing-vertical) * 2);
+}
+
+.slots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--pico-block-spacing-vertical) var(--pico-block-spacing-horizontal);
+}
+
+.slots article {
+    flex: 1;
+    max-width: 20em;
+    min-width: 12em;
+}
+
+#search {
+    margin-bottom: 0;
+}
+
+#search-container {
+    position: relative;
+}
+
+#search-results {
+    display: none;
+    left: 0;
+    margin: 0 1rem;
+    position: absolute;
+    right: 0;
+    text-align: left;
+    top: 0.5rem;
+}
+
+.search-result {
+    display: block;
+    margin-bottom: 0.5em;
+    text-decoration: none;
+}
+
+.search-result:last-of-type {
+    margin: 0;
 }

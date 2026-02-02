@@ -13,9 +13,8 @@
     {{ macros.card_illustration(linked_card.resource, linked_card.rare, true) }}
 {% endblock %}
 
-{% block description %}{{ upgrade.upgrade.text_|_ }}{% endblock %}
-
 {% block content %}
+    {{ upgrade.upgrade.text_|_|gametext }}
     <p><strong>ID:</strong> {{ upgrade.upgrade.id }}</p>
     <p><strong>Cost:</strong> {{ upgrade.upgrade.cost }}</p>
     <p><strong>Incompatible:</strong> {% if upgrade.upgrade.incompatible %}{{ upgrade.upgrade.incompatible|u }}{% else %}<em>None</em>{% endif %}</p>
@@ -24,6 +23,9 @@
     {{ macros.conditions(upgrade.upgrade.condition) }}
     <p><strong>Effects:</strong></p>
     {{ macros.effects(upgrade.upgrade.effect) }}
+
+    <div class="clear"></div>
+    <hr />
 
     {{ macros.common_references(upgrade, 'upgrade') }}
 {% endblock %}

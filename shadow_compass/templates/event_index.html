@@ -7,7 +7,9 @@
 {% block description %}The full list of game events is presented below.{% endblock %}
 
 {% block content %}
+    {% if lang != 'zhCN' %}
     <p><strong>Note: event names are machine-translated, as the game does not include localisation for these fields.</strong></p>
+    {% endif %}
     <ul>
         {% for event in game.events.values()|_sort %}
             <li>{{ event|a }}</li>

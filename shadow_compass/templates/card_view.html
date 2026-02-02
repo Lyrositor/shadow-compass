@@ -26,7 +26,14 @@
 {% block description %}{{ card.card.title_|_ }}{% endblock %}
 
 {% block content %}
-    <blockquote>{{ card.card.text_|_ }}</blockquote>
+    {{ card.card.text_|_|gametext }}
+    {% if card.tags %}
+        <div class="tags">
+            {% for tag, value in card.tags %}
+                {{ macros.tag(tag, value) }}
+            {% endfor %}
+        </div>
+    {% endif %}
     <p><strong>ID:</strong> {{ card.card.id }}</p>
     <p><strong>Type:</strong> {{ card.card.type.label }}</p>
     <p><strong>Rarity:</strong> {{ card.card.rare.label }}</p>
@@ -53,17 +60,7 @@
     </div>
 
     <div class="clear"></div>
-
-    <h3>Tags</h3>
-    {% if card.tags %}
-        <div class="tags">
-            {% for tag, value in card.tags %}
-                {{ macros.tag(tag, value) }}
-            {% endfor %}
-        </div>
-    {% else %}
-        <p><em>This card has no tags.</em></p>
-    {% endif %}
+    <hr />
 
     <h3>Post-Rite Triggers</h3>
     {% if not card.card.post_rite  %}

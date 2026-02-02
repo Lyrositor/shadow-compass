@@ -1,4 +1,6 @@
+import json
 import logging
+import re
 import shutil
 from pathlib import Path
 from typing import Iterable, Any
@@ -17,7 +19,7 @@ DEFAULT_LANGUAGE = 'en'
 LANGUAGES = ('zhCN', 'zhTW', 'en', 'ja')
 RESOURCES = (
     'logo.png',
-    'script.js',
+    'script.mjs',
     'style.css',
 )
 
@@ -84,6 +86,19 @@ class HtmlExporter:
                     key=entry.key,
                     **{entry_name: entry},
                 )
+
+        yield 'search.js', self._build_search_results(lang)
+
+    def _build_search_results(self, lang: str) -> str:
+        search_results = [
+            {
+                'key': entry.key,
+                'label': self.game_db.trans(entry.label, lang),
+                'description': self.game_db.trans(entry.description, lang) if entry.description else None,
+            }
+            for entry in self.game_db.get_all_entries()
+        ]
+        return f'const SEARCH_RESULTS = {json.dumps(search_results, ensure_ascii=False)}'
 
     def _build_env(self, lang: str, root: str) -> Environment:
         env = Environment(
@@ -191,8 +206,20 @@ def _translatesort(ctx: Context, entries: Iterable[Entry]) -> list[Entry]:
 
 
 def _gametext(text: str) -> Markup:
-    formatted_text = '<br /><br />'.join(escape(line) for line in text.split('\n'))
-    return Markup(f'<blockquote>{formatted_text}</blockquote>' )
+    formatted_text = re.sub(r'(</?)([a-z]+)(.*?>)', _process_tag, text).replace('\n', '<br /><br />')
+    return Markup(f'<blockquote class="gametext">{formatted_text}</blockquote>' )
+
+
+def _process_tag(tag: re.Match[str]) -> str:
+    tag_name = tag.group(2)
+    match tag_name:
+        case 'i':
+            new_tag_name = 'em'
+        case 'b':
+            new_tag_name = 'strong'
+        case _:
+            return ''
+    return tag.group(1) + new_tag_name + tag.group(3)
 
 
 def _slotnum(slot: str) -> str:

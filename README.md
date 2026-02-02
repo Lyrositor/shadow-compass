@@ -11,11 +11,7 @@ The tool is under heavy development and is not yet ready for widespread use.
 ## Remaining Work
 
 - Support counters
-- Support endings
-- Support objectives
-- Support upgrades
 - Support dark mode in HTML output
 - Add custom translations for missing localisations
-- Improve formatting of game text (e.g. handle `<i>` tags)
 - Improve consistency between op1/r1 display
 - Confirm various game behaviours, improve labelling

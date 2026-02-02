@@ -1,13 +1,16 @@
+import re
 from dataclasses import dataclass
-from typing import Iterable
+from typing import Iterable, Any, Self
 
 from shadow_compass.loc import Loc
 from shadow_compass.prop import prop
+from shadow_compass.schema.common import CustomSchema, ParseFunc
 from shadow_compass.schema.condition import Condition
 from shadow_compass.schema.effect import Effect
 from shadow_compass.schema.enums import RiteResult, RiteType
 from shadow_compass.schema.outcome import Outcome
 from shadow_compass.schema.reference import Reference, TagReference
+from shadow_compass.sudanjson import MultiDict
 
 
 @dataclass(frozen=True)
@@ -67,7 +70,7 @@ class RiteOpenCondition:
 
 
 @dataclass(frozen=True)
-class Rite:
+class Rite(CustomSchema):
     id: int
     name: str
     text: str
@@ -93,10 +96,19 @@ class Rite:
     tag_tips_up: TagTipsUp | None = None
     final_pin: bool | None = None
     from_pins: tuple[RitePin, ...] = ()
-    random_text_up: dict[str, RandomTextUp] = prop(default_factory=dict)
+    random_text_up: dict[int, RandomTextUp] = prop(default_factory=dict)
     cards_slot: dict[str, RiteCardSlot] = prop(default_factory=dict)
     method_settlement: str = '' # Unused
     random_effect: tuple[Effect, ...] = ()  # Unused
+
+    @classmethod
+    def parse(cls, data: dict[str, Any] | MultiDict[str, Any], parse_func: ParseFunc) -> Self | None:
+        random_text_up = {}
+        for key, value in data.get('random_text_up', {}).items():
+            if not (match := re.match(r'r(\d+)', key)):
+                raise ValueError(f'Invalid random text up key format: {key}')
+            random_text_up[int(match.group(1))] = value
+        return parse_func({**data, 'random_text_up': random_text_up}, cls, True)
 
     @property
     def name_(self) -> Loc:
@@ -140,14 +152,14 @@ class Rite:
     def get_random_text_text(self, key: str) -> Loc:
         return Loc(self.random_text[key], f'rite_{self.id}_random_text_{key}_text')
 
-    def get_random_text_up_text(self, key: str) -> Loc:
-        return Loc(self.random_text_up[key].text, f'rite_{self.id}_random_text_{key}_text')
+    def get_random_text_up_text(self, key: int) -> Loc:
+        return Loc(self.random_text_up[key].text, f'rite_{self.id}_random_text_r{key}_text')
 
-    def get_random_text_up_type_tips(self, key: str) -> Loc:
-        return Loc(self.random_text_up[key].type_tips, f'rite_{self.id}_random_text_{key}_type_tips')
+    def get_random_text_up_type_tips(self, key: int) -> Loc:
+        return Loc(self.random_text_up[key].type_tips, f'rite_{self.id}_random_text_r{key}_type_tips')
 
-    def get_random_text_up_low_target_tips(self, key: str) -> Loc:
-        return Loc(self.random_text_up[key].low_target_tips, f'rite_{self.id}_random_text_{key}_low_target_tips')
+    def get_random_text_up_low_target_tips(self, key: int) -> Loc:
+        return Loc(self.random_text_up[key].low_target_tips, f'rite_{self.id}_random_text_r{key}_low_target_tips')
 
     def get_settlement_prior_title(self, idx: int) -> Loc:
         return Loc(self.settlement_prior[idx].result_title or '', f'rite_{self.id}_prior_settlement_{idx}_title')

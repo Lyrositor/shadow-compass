@@ -58,6 +58,10 @@ class Entry(ABC):
         raise NotImplementedError
 
     @property
+    def description(self) -> Loc|None:
+        return None
+
+    @property
     def sort_key(self) -> Loc:
         return self.label
 
@@ -80,6 +84,9 @@ class CardEntry(Entry):
 
     @property
     def label(self) -> Loc: return self.card.name_
+
+    @property
+    def description(self) -> Loc|None: return self.card.text_
 
     @property
     def display_type(self) -> CardDisplayType | None: return self.gallery_card.show_type if self.gallery_card else None
@@ -111,6 +118,9 @@ class EndingEntry(Entry):
 
     @property
     def label(self) -> Loc: return self.name
+
+    @property
+    def description(self) -> Loc|None: return self.text
 
     @property
     def name(self) -> Loc: return Loc(self.over.name or '', f'over_{self.id}_name')
@@ -158,6 +168,9 @@ class ObjectiveEntry(Entry):
     @property
     def label(self) -> Loc: return self.quest.name_
 
+    @property
+    def description(self) -> Loc|None: return self.quest.text_
+
 
 @dataclass(frozen=True, repr=False)
 class RiteEntry(Entry):
@@ -168,6 +181,9 @@ class RiteEntry(Entry):
 
     @property
     def label(self) -> Loc: return self.rite.name_
+
+    @property
+    def description(self) -> Loc|None: return self.rite.text_
 
 
 @dataclass(frozen=True, repr=False)
@@ -183,6 +199,9 @@ class TagEntry(Entry):
     @property
     def label(self) -> Loc: return self.tag.name_
 
+    @property
+    def description(self) -> Loc|None: return self.tag.text_
+
 
 @dataclass(frozen=True, repr=False)
 class UpgradeEntry(Entry):
@@ -193,6 +212,9 @@ class UpgradeEntry(Entry):
 
     @property
     def label(self) -> Loc: return self.upgrade.name_
+
+    @property
+    def description(self) -> Loc|None: return self.upgrade.text_
 
 
 @dataclass(frozen=True)
@@ -207,6 +229,20 @@ class GameDb:
     tags: dict[str, TagEntry]
     upgrades: dict[int, UpgradeEntry]
     localisations: dict[str, dict[str, str]]
+
+    def get_all_entries(self) -> Iterable[Entry]:
+        for entries in (
+            self.cards,
+            self.endings,
+            self.events,
+            self.loots,
+            self.objectives,
+            self.rites,
+            self.tags,
+            self.upgrades,
+        ):
+            for entry in entries.values():
+                yield entry
 
     @property
     def cards_by_display_type(self) -> Iterable[tuple[CardDisplayType | None, list[CardEntry]]]:
