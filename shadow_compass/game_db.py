@@ -315,7 +315,7 @@ class GameDb:
                 _apply_references(rite, references, attr_name, cards, endings, events, loots, rites, tags, upgrades)
 
         for ending in endings.values():
-            _apply_references(ending, ending.over.condition_references(), 'ending_conditions',  cards, endings, events, loots, rites, tags, upgrades)
+            _apply_references(ending, ending.over.condition_references(), 'ending_conditions', cards, endings, events, loots, rites, tags, upgrades)
 
         for event in events.values():
             for references, attr_name in (
@@ -372,43 +372,37 @@ def _apply_references(
         target = None
         match ref:
             case CardReference():
-                if ref.id in cards:
-                    target = cards[ref.id]
-                else:
+                target = cards.get(ref.id)
+                if target is None:
                     logger.warning(f'Failed to locate card: {ref.id}')
             case EndingReference():
-                if ref.id in endings:
-                    target = endings[ref.id]
-                else:
+                target = endings.get(ref.id)
+                if target is None:
                     logger.warning(f'Failed to locate ending: {ref.id}')
             case EventReference():
-                if ref.id in events:
-                    target = events[ref.id]
-                else:
+                target = events.get(ref.id)
+                if target is None:
                     logger.warning(f'Failed to locate event: {ref.id}')
             case LootReference():
-                if ref.id in loots:
-                    target = loots[ref.id]
-                else:
+                target = loots.get(ref.id)
+                if target is None:
                     logger.warning(f'Failed to locate loot: {ref.id}')
             case RiteReference():
-                if ref.id in rites:
-                    target = rites[ref.id]
-                else:
+                target = rites.get(ref.id)
+                if target is None:
                     logger.warning(f'Failed to locate rite: {ref.id}')
             case TagReference():
-                if ref.id in tags:
-                    target = tags[ref.id]
-                else:
+                target = tags.get(ref.id)
+                if target is None:
                     logger.warning(f'Failed to locate tag: {ref.id}')
             case UpgradeReference():
-                if ref.id in upgrades:
-                    target = upgrades[ref.id]
-                else:
+                target = upgrades.get(ref.id)
+                if target is None:
                     logger.warning(f'Failed to locate upgrade: {ref.id}')
             case _:
                 raise ValueError(f'Unknown reference type: {ref}')
+
         if target is not None:
             attr = getattr(target, attr_name)
-            if not any(e for e in attr if e.key == entry.key):
+            if not any(e.key == entry.key for e in attr):
                 attr.append(entry)

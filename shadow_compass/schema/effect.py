@@ -8,7 +8,8 @@ from shadow_compass.prop import prop
 from shadow_compass.schema.common import CustomSchema, ParseFunc, OPERATOR, TAG, CARD_ID, SLOT, RITE_ID, COUNTER_ID, \
     TEXT_ID
 from shadow_compass.schema.enums import Operator, CardRarity, Slot
-from shadow_compass.schema.reference import Reference, CardReference, TagReference, EventReference, EndingReference
+from shadow_compass.schema.reference import Reference, CardReference, TagReference, EventReference, EndingReference, \
+    RiteReference, LootReference
 from shadow_compass.sudanjson import MultiDict
 
 
@@ -77,12 +78,19 @@ class AdjustEquipCardTableEffect(Effect):
     operator: Operator
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+        yield CardReference(self.value)
+
 
 @effect(fr'parent{OPERATOR}equip')
 @dataclass(frozen=True)
 class AdjustEquipParentEffect(Effect):
     operator: Operator
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.value)
 
 
 @effect(fr'{SLOT}{OPERATOR}equip')
@@ -103,6 +111,12 @@ class AdjustEquipSlotEffect(Effect, CustomSchema):
         else:
             raise ValueError(f'Unsupported value: {data["value"]}')
         return parse_func(d, cls, True)
+
+    def references(self) -> Iterable[Reference]:
+        if self.card_id is not None:
+            yield CardReference(self.card_id)
+        if self.tag is not None:
+            yield TagReference(self.tag)
 
 
 @effect(fr'{SLOT}{OPERATOR}{SLOT.replace('slot', 'slotted')}')
@@ -133,6 +147,13 @@ class AdjustEquipTaggedTableEffect(Effect, CustomSchema):
             raise ValueError(f'Unsupported value: {data["value"]}')
         return parse_func(d, cls, True)
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tagged)
+        if self.card_id is not None:
+            yield CardReference(self.card_id)
+        if self.tag is not None:
+            yield TagReference(self.tag)
+
 
 @effect(fr'{CARD_ID}\.uprare')
 @dataclass(frozen=True)
@@ -140,12 +161,18 @@ class AdjustRarityCardEffect(Effect):
     card_id: int
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+
 
 @effect(fr'table\.{CARD_ID}\.uprare')
 @dataclass(frozen=True)
 class AdjustRarityCardTableEffect(Effect):
     card_id: int
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
 
 
 @effect(fr'{SLOT}\.uprare')
@@ -161,12 +188,18 @@ class AdjustRarityTaggedEffect(Effect):
     tag: str
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+
 
 @effect(fr'table\.{TAG}\.uprare')
 @dataclass(frozen=True)
 class AdjustRarityTaggedTableEffect(Effect):
     tag: str
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
 
 
 @effect(fr'{CARD_ID}{OPERATOR}{TAG}')
@@ -177,6 +210,10 @@ class AdjustTagCardEffect(Effect):
     tag: str
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+        yield TagReference(self.tag)
+
 
 @effect(fr'table\.{CARD_ID}{OPERATOR}{TAG}')
 @dataclass(frozen=True)
@@ -185,6 +222,10 @@ class AdjustTagCardTableEffect(Effect):
     tag: str
     operator: Operator
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+        yield TagReference(self.tag)
 
 
 @effect(fr'total\.{CARD_ID}{OPERATOR}{TAG}')
@@ -195,6 +236,10 @@ class AdjustTagCardTotalEffect(Effect):
     operator: Operator
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+        yield TagReference(self.tag)
+
 
 @effect(fr'parent{OPERATOR}{TAG}')
 @dataclass(frozen=True)
@@ -203,6 +248,9 @@ class AdjustTagParentEffect(Effect):
     operator: Operator
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+
 
 @effect(fr'self{OPERATOR}{TAG}')
 @dataclass(frozen=True)
@@ -210,6 +258,9 @@ class AdjustTagSelfEffect(Effect):
     tag: str
     operator: Operator
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
 
 
 @effect(fr'{SLOT}{OPERATOR}{TAG}')
@@ -220,6 +271,9 @@ class AdjustTagSlotEffect(Effect):
     tag: str
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+
 
 @effect(fr'total\.sudan{OPERATOR}{TAG}')
 @dataclass(frozen=True)
@@ -227,6 +281,9 @@ class AdjustTagSudanTotalEffect(Effect):
     operator: Operator
     tag: str
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
 
 
 @effect(fr'{TAG.replace('tag', 'tagged')}{OPERATOR}{TAG}')
@@ -237,6 +294,10 @@ class AdjustTagTaggedEffect(Effect):
     tag: str
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tagged)
+        yield TagReference(self.tag)
+
 
 @effect(fr'table\.{TAG.replace('tag', 'tagged')}{OPERATOR}{TAG}')
 @dataclass(frozen=True)
@@ -246,6 +307,10 @@ class AdjustTagTaggedTableEffect(Effect):
     tag: str
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tagged)
+        yield TagReference(self.tag)
+
 
 @effect(fr'total\.{TAG.replace('tag', 'tagged')}{OPERATOR}{TAG}')
 @dataclass(frozen=True)
@@ -254,6 +319,10 @@ class AdjustTagTaggedTotalEffect(Effect):
     operator: Operator
     tag: str
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tagged)
+        yield TagReference(self.tag)
 
 
 @effect(r'all')
@@ -338,6 +407,9 @@ class ChangeCardNameCardTableEffect(Effect):
     def text(self) -> Loc:
         return Loc(self.value, f'change_card_name_{self.text_id}')
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+
 
 @effect(fr'total\.change_card_name\.{TEXT_ID}\.{CARD_ID}')
 @dataclass(frozen=True)
@@ -349,6 +421,9 @@ class ChangeCardNameCardTotalEffect(Effect):
     @property
     def text(self) -> Loc:
         return Loc(self.value, f'change_card_name_{self.text_id}')
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
 
 
 @effect(fr'change_card_name\.{TEXT_ID}\.{SLOT}')
@@ -373,6 +448,9 @@ class ChangeCardTextCardTotalEffect(Effect):
     @property
     def text(self) -> Loc:
         return Loc(self.value, f'change_card_text_{self.text_id}')
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
 
 
 @effect(fr'change_card_text\.{TEXT_ID}\.{SLOT}')
@@ -409,6 +487,9 @@ class CleanCardEffect(Effect):
     card_id: int
     value: int = prop(assert_equals=1)
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+
 
 @effect(fr'table\.clean\.{CARD_ID}(?:\|{TAG})?')
 @dataclass(frozen=True)
@@ -417,6 +498,11 @@ class CleanCardTableEffect(Effect):
     value: int
     tag: str | None = None
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+        if self.tag is not None:
+            yield TagReference(self.tag)
+
 
 @effect(fr'table\.clean\.char\|{TAG}=0')
 @dataclass(frozen=True)
@@ -424,12 +510,19 @@ class CleanCharTableEffect(Effect):
     value: int
     tag: str
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+
 
 @effect(r'table\.clean\.item(?P<card_ids>[|!\d]+)')
 @dataclass(frozen=True)
 class CleanItemTableEffect(Effect):
     value: int
-    card_ids: tuple[int, ...] = prop(parser=lambda c: c[2:].replace('!', '').split('|'))
+    card_ids: tuple[int, ...] = prop(parser=lambda c: tuple(int(ci) for ci in c[2:].replace('!', '').split('|')))
+
+    def references(self) -> Iterable[Reference]:
+        for card_id in self.card_ids:
+            yield CardReference(card_id)
 
 
 @effect(r'clean.rite')
@@ -461,6 +554,9 @@ class CleanTagEffect(Effect):
     tag: str
     value: int = prop(assert_equals=1)
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+
 
 @effect(fr'table\.clean\.{TAG}(?:\|{TAG.replace('tag', 'additional_tag')})?(?:\.rare=(?P<rarity>\d))?')
 @dataclass(frozen=True)
@@ -469,6 +565,11 @@ class CleanTagTableEffect(Effect):
     value: int
     additional_tag: str | None = None
     rarity: CardRarity|None = None
+
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+        if self.additional_tag is not None:
+            yield TagReference(self.additional_tag)
 
 
 @effect(r'close_box')
@@ -637,6 +738,9 @@ class FocusRiteEffect(Effect):
     rite_id: int
     value: tuple[int, ...]
 
+    def references(self) -> Iterable[Reference]:
+        yield RiteReference(self.rite_id)
+
 
 @effect(r'hand_card_refresh')
 @dataclass(frozen=True)
@@ -653,6 +757,10 @@ class LootEffect(Effect):
     def loot_ids(self) -> tuple[int, ...]:
         return (self.value, ) if isinstance(self.value, int) else self.value
 
+    def references(self) -> Iterable[Reference]:
+        for loot_id in self.loot_ids:
+            yield LootReference(loot_id)
+
 
 @effect(fr'loot\.{TAG}\+1(?:\|{TAG.replace('tag', 'exclude_tag')}-1)?')
 @dataclass(frozen=True)
@@ -665,11 +773,21 @@ class LootTagEffect(Effect):
     def loot_ids(self) -> tuple[int, ...]:
         return (self.value, ) if isinstance(self.value, int) else self.value
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+        if self.exclude_tag is not None:
+            yield TagReference(self.exclude_tag)
+        for loot_id in self.loot_ids:
+            yield LootReference(loot_id)
+
 
 @effect(r'magic_sudan')
 @dataclass(frozen=True)
 class MagicSudanEffect(Effect):
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.value)
 
 
 @effect(fr'table\.{CARD_ID}\.追随者=0\+追随者')
@@ -678,12 +796,18 @@ class MakeFollowerCardTableEffect(Effect):
     card_id: int
     value: int = prop(assert_equals=1)
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+
 
 @effect(fr'total\.{CARD_ID}\.追随者=0\+追随者')
 @dataclass(frozen=True)
 class MakeFollowerCardTotalEffect(Effect):
     card_id: int
     value: int = prop(assert_equals=1)
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
 
 
 @effect(r'no_prompt')
@@ -746,6 +870,9 @@ class PopCardEffect(Effect):
     def text(self) -> Loc:
         return Loc(self.value, f'POP_{self.text_id}_TEXT_1')
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+
 
 @effect(fr'hand_pop\.{TEXT_ID}\.{CARD_ID}')
 @dataclass(frozen=True)
@@ -758,17 +885,23 @@ class PopCardHandEffect(Effect):
     def text(self) -> Loc:
         return Loc(self.value, f'POP_{self.text_id}_TEXT_1')
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
 
-@effect(fr'rite_pop\.{TEXT_ID}\.{CARD_ID}')
+
+@effect(fr'rite_pop\.{TEXT_ID}\.{RITE_ID}')
 @dataclass(frozen=True)
 class PopCardRiteEffect(Effect):
     text_id: str
-    card_id: int
+    rite_id: int
     value: str
 
     @property
     def text(self) -> Loc:
         return Loc(self.value, f'POP_{self.text_id}_TEXT_1')
+
+    def references(self) -> Iterable[Reference]:
+        yield RiteReference(self.rite_id)
 
 
 @effect(fr'pop\.{TEXT_ID}\.self')
@@ -816,6 +949,9 @@ class PopTaggedEffect(Effect):
     def text(self) -> Loc:
         return Loc(self.value, f'POP_{self.text_id}_TEXT_1')
 
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
+
 
 @effect(fr'hand_pop\.{TEXT_ID}\.{TAG}')
 @dataclass(frozen=True)
@@ -827,6 +963,9 @@ class PopTaggedHandEffect(Effect):
     @property
     def text(self) -> Loc:
         return Loc(self.value, f'POP_{self.text_id}_TEXT_1')
+
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tag)
 
 
 @effect(fr'think_pop\.{TEXT_ID}')
@@ -868,6 +1007,9 @@ class RebirthSlotEffect(Effect):
 class RiteEffect(Effect):
     value: int
 
+    def references(self) -> Iterable[Reference]:
+        yield RiteReference(self.value)
+
 
 @effect(r'sleep')
 @dataclass(frozen=True)
@@ -901,6 +1043,10 @@ class SuccessEffect(Effect):
 @dataclass(frozen=True)
 class SudanCardEffect(Effect):
     value: tuple[int, ...]
+
+    def references(self) -> Iterable[Reference]:
+        for value in self.value:
+            yield CardReference(value)
 
 
 @effect(r'sudan_pool\.sudan\+冻结')
@@ -937,6 +1083,11 @@ class UpgradeCardEffect(Effect, CustomSchema):
             raise ValueError(f'Invalid upgrade card: {data}')
         return parse_func({'card_id': card_id, 'tags': tags}, cls, True)
 
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+        for tag in self.tags.keys():
+            yield TagReference(tag)
+
 
 @effect(fr'g\.{CARD_ID}\+{TAG}')
 @dataclass(frozen=True)
@@ -944,6 +1095,9 @@ class UpgradeCardAddTagEffect(Effect):
     card_id: int
     tag: str
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
 
 
 @effect(r'g\.change')
@@ -955,6 +1109,10 @@ class UpgradeCardChangeEffect(Effect, CustomSchema):
     @classmethod
     def parse(cls, data: dict[str, Any] | MultiDict[str, Any], parse_func: ParseFunc) -> Self | None:
         return cls(*data['value'])
+
+    def references(self) -> Iterable[Reference]:
+        yield CardReference(self.card_id)
+        yield CardReference(self.new_card_id)
 
 
 @effect(r'g\.coin')
@@ -969,6 +1127,10 @@ class UpgradeTagAddTagEffect(Effect):
     tagged: str
     tag: str
     value: int
+
+    def references(self) -> Iterable[Reference]:
+        yield TagReference(self.tagged)
+        yield TagReference(self.tag)
 
 
 def list_effects() -> list[tuple[str, type[Effect]]]:

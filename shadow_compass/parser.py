@@ -88,8 +88,9 @@ def _parse_entity(data: dict[str, Any] | MultiDict[str, Any], entity_cls: Any) -
                 if entity_kwargs[entity_field.name] != metadata.assert_equals:
                     raise ValueError(f'Unexpected value for {entity_field.name}: {entity_kwargs[entity_field.name]}')
             props.remove(prop_name)
+
     if props:
-        raise ValueError(f'Unexpected JSON properties for {entity_cls}: {props}')
+        raise ValueError(f'Unexpected JSON properties for {entity_cls.__name__}: {props}')
     return entity_cls(**entity_kwargs)
 
 

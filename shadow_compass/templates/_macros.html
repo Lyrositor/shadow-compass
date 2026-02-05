@@ -475,7 +475,7 @@
     {% elif eff.cls == 'PopCardHandEffect' %}
         Card in Hand ({{ eff.card_id|c }}) Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopCardRiteEffect' %}
-        Card in Rite ({{ eff.card_id|c }}) Pops: {{ eff.text|_|gametext }}
+        Card in Rite ({{ eff.rite_id|c }}) Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopSelfEffect' %}
         Self Pops: {{ eff.text|_|gametext }}
     {% elif eff.cls == 'PopSlotEffect' %}
